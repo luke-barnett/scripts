@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require "fileutils"
+require "fastimage"
 
 if !ENV["WallpapersDirectory"]
   ENV["WallpapersDirectory"] = "#{Dir.home}/Dropbox/IFTTT/reddit/wallpapers"
@@ -20,5 +21,10 @@ wallpapers.each do |wallpaper|
     next
   end
 
-  #TODO check image dimensions want at least 1080p
+  width, height = FastImage.size(wallpaper)
+
+  if width < 1920 or height < 1080
+    FileUtils.rm(wallpaper)
+    next
+  end
 end
