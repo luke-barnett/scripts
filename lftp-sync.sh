@@ -17,8 +17,12 @@ else
     touch "$lock_file"
     lftp -u "$login", sftp://"$host" << EOF
     set sftp:auto-confirm yes
-    set mirror:use-pget-n 10
-    mirror -c -P5 --log="/var/log/sync/$base_name.log" --exclude .sync/ --Move --scan-all-first "$remote_dir" "$local_dir"
+    set xfer:use-temp-file yes
+    set xfer:temp-file-name *.lftp
+    set mirror:use-pget-n 30
+    set mirror:parallel-transfer-count 5
+    set mirror:parallel-directories yes
+    mirror -c --log="/var/log/sync/$base_name.log" --exclude .sync/ --Move --scan-all-first "$remote_dir" "$local_dir"
     quit
 EOF
     rm -f "$lock_file"
